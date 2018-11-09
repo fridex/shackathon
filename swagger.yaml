@@ -1,0 +1,29 @@
+swagger: "2.0"
+info:
+  title: sHackathon
+  version: "0.1"
+basePath: "/api/v1/"
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /translate:
+    post:
+      tags: ["Translate"]
+      x-swagger-router-controller: api
+      operationId: a
+      summary: Translate the given text if requested.
+      parameters:
+        - name: text
+          in: body
+          required: true
+          description: TBD.
+          schema:
+            type: object
+            additionalProperties: true
+      responses:
+        201:
+          description: Translated message.
+
+
