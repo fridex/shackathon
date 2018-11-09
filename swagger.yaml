@@ -12,18 +12,31 @@ paths:
     post:
       tags: ["Translate"]
       x-swagger-router-controller: api
-      operationId: a
+      operationId: translate
       summary: Translate the given text if requested.
       parameters:
         - name: text
-          in: body
+          in: query
+          type: string
           required: true
           description: TBD.
-          schema:
-            type: object
-            additionalProperties: true
       responses:
         201:
           description: Translated message.
 
+  /raw-graphql-query:
+    post:
+      tags: ["Translate"]
+      x-swagger-router-controller: api
+      operationId: raw_graphql_query
+      summary: Get raw graphql query response
+      parameters:
+        - name: text
+          in: query
+          type: string
+          required: true
+          description: TBD.
+      responses:
+        201:
+          description: Raw graphql response.
 

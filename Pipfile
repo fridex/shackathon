@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 connexion = {extras = ["swagger-ui"], version = "*"}
 gunicorn = "*"
+requests = "*"
 
 [dev-packages]
 
