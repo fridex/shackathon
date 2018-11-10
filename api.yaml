@@ -56,7 +56,7 @@ objects:
     apiVersion: v1
     metadata:
       labels:
-        app: shackathon
+        app: aAaAaAaAaAshackathon
         component: api
       name: api
     spec:
@@ -70,17 +70,19 @@ objects:
         spec:
           containers:
             - name: api
-              env: []
+              env:
+              - name: WEB_CONCURRENCY
+                value: '1'
               ports:
                 - containerPort: 8080
                   protocol: TCP
               resources:
                 requests:
-                  memory: "384Mi"
-                  cpu: "500m"
+                  memory: "1Gi"
+                  cpu: "2"
                 limits:
-                  memory: "384Mi"
-                  cpu: "500m"
+                  memory: "1Gi"
+                  cpu: "2"
               readinessProbe:
                 httpGet:
                   path: '/api/v1/ui'
