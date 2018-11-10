@@ -130,10 +130,10 @@ def _translate(graph_response: dict,
         elif api == 'g':
             translation = g_translate(query, source_lang, target_lang)
         else:
-            translation = {'status': 404, 'statusMessage': 'API Not Found', 'translations': []}
+            translation = {'error': 'API Not Found'}, 400
 
     else:
-        translation = {'status': 400, 'statusMessage': 'Bad Request', 'translations': []}
+        translation = {'error': 'Bad Request'}, 400
 
     return translation
 
