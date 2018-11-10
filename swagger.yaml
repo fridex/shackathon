@@ -17,13 +17,13 @@ paths:
       parameters:
         - name: text
           in: body
+          description: TBD.
           schema:
             type: object
-            required: true
-            description: TBD.
             properties:
               text:
                  type: string        
+                 description: TBD.
         - name: source_lang
           in: query
           type: string
