@@ -56,6 +56,7 @@ _QUERY = \
 client = ServerProxy(QUERY_URL)
 g_counter = 0
 
+
 def _get_parsed_attrs(graph_response: dict) -> list:
     meaning, = graph_response['data']['cqp']['meanings']
     meaning
@@ -69,7 +70,6 @@ def _get_parsed_attrs(graph_response: dict) -> list:
     for token_attr in tokens:
         text = token_attr['text']
         best_lemma = token_attr.get('bestLemma', None)
-        best_lemma = token_attr.get('bestLemma', None)
 
         if best_lemma:
             lemmas.append(best_lemma['lemma'])
@@ -78,66 +78,93 @@ def _get_parsed_attrs(graph_response: dict) -> list:
 
             correction.append(text)
 
-    #return correction, lemmas, tags
-    return correction, lemmas
+    return correction, lemmas, tags
 
 
-def _should_analyze(graph_response: dict) -> bool:
+def _analyze_query(graph_response: dict) -> bool:
     # TODO: use declension?
     if graph_response:
 
-        correction, lemmas = _get_parsed_attrs(graph_response)
+        skip_right, skip_left = 0, 0
 
-        # matches checks
+        correction, lemmas, tags = _get_parsed_attrs(graph_response)
+
+        # cmd check
         cmd_allowed = False
         for cmd in ALLOWED_COMMANDS:
-            query_cmd = " ".join(lemmas[:len(cmd.split(" "))])
+            query_cmd_len = len(cmd.split(" "))
+            query_cmd = " ".join(lemmas[:query_cmd_len])
+
             cmd_allowed = query_cmd  == cmd
 
             if cmd_allowed:
+                skip_left = max(query_cmd_len, skip_left)
                 break
 
-        valid_lang_spec = lemmas[-1] in ALLOWED_LANGUAGE_SPEC
-
+        # exact check
         exact_allowed = False
         for exact in ALLOWED_EXACTS:
-            query_exact = " ".join(correction[-len(exact.split(" ")):])
+            exact_spec_len = len(exact.split(" "))
+            query_exact = " ".join(correction[-exact_spec_len:])
 
             exact_allowed = query_exact == exact
 
             if exact_allowed:
+                skip_right = max(exact_spec_len, skip_right)
                 break
 
+        # lang spec check
+        valid_lang_spec = lemmas[-1] in ALLOWED_LANGUAGE_SPEC
+        valid_lang_spec_len = len(exact.split(" "))
+
+        if valid_lang_spec:
+            skip_right = max(valid_lang_spec, skip_right)
 
         if exact_allowed or (cmd_allowed and valid_lang_spec):
-            return True
 
-    return False
+            return lemmas[skip_left:len(lemmas) - skip_right], \
+                   tags[skip_left:len(tags) - skip_right]
+
+    return [], []
 
 
 def _translate(graph_response: dict,
                source_lang='cz',
                target_lang='en',
                api='s') -> dict:
-    # graph_response['data']['meanings'][0]['queries'][0]['tokens'][0]['text']
+    query, tags = _analyze_query(graph_response)
 
-    if _should_analyze(graph_response):
-        #query = ...
-        pass
+    resp = {'status': 400,
+            'statusMessage': 'Status OK',
+            'translations': [],
+            'tags': tags}
 
-        if api == 'Seznam':
-            translation = client.toolbar.search(query, f"{source_lang}_{target_lang}")
-        elif api == 'Google':
-            translation = g_translate(query, source_lang, target_lang)
-        elif api == 'TBD':
-            translation = {'success': 'You will see something here I guess...'}, 400
-        else:
-            translation = {'error': 'API Not Found'}, 400
+    if query:
 
-    else:
-        translation = {'error': 'Bad Request'}, 400
+        if api == 's':
+            # only one word per request is supported
+            for q in query:
+                r = client.toolbar.search(q, f"{source_lang}_{target_lang}")
+                translations = [
+                    pr['translatedPhrase'] for pr in r['translations']
+                ]
+                resp['translations'].append(translations)
 
-    return translation
+            resp['status'] = 200
+
+        elif api == 'g':
+            translations = g_translate(query, source_lang, target_lang)
+            resp['translations'] = [
+                [t] for t in translations
+            ]
+            resp['status'] = 200
+
+
+        elif api == 'm':  # TODO: custom model
+            pass
+
+
+    return resp
 
 
 def _construct_link(query: str, source_lang='cz', target_lang='en') -> str:
