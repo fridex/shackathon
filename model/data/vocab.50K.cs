@@ -9,8 +9,8 @@ v
 na
 &quot;
 je
-)
 (
+)
 že
 o
 s
