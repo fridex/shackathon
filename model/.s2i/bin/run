@@ -1,3 +1,7 @@
 #!/usr/bin/bash
 
-ls nmt/
+if [ "${RUN_MODE}" == "train" -o -z "${RUN_MODE}" ]; then
+    /opt/app-root/src/train.sh
+elif [ "${RUN_MODE}"  == "predict" ]; then
+    /opt/app-root/src/predict.sh
+fi
