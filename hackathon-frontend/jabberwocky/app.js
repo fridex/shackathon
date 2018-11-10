@@ -102,7 +102,7 @@ export default class App extends Component {
           sourceValue: query,
           sourceDefs: tags,
           targetDefs: translations,
-          targetValue: tv,
+          targetValue: tv.join(' '),
           retrieval: null
         });
       });
