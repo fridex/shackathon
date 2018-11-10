@@ -63,7 +63,7 @@ export default class App extends Component {
   };
 
   translate = cb => {
-    axios.post(`/api/v1/translate?source_lang=${languageTable[this.state.source]}&target_lang=${languageTable[this.state.target]}&api=${backends[this.state.backend]}`,
+    axios.post(`/api/v1/translate?source_lang=${languageTable[this.state.source].toLowerCase()}&target_lang=${languageTable[this.state.target].toLowerCase()}&api=${backends[this.state.backend]}`,
       {
         text: this.state.entered,
       }
@@ -95,7 +95,7 @@ export default class App extends Component {
           retrieval: null
         });
       });
-    }, 750);
+    }, 1500);
     this.setState({ timeout });
   };
   removeDecoration = {backgroundColor: '#fff', border: '0px'};
