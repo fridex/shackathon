@@ -195,7 +195,11 @@ def translate(text: str,
     global g_counter_translated
     g_counter_total += 1
     response = raw_graphql_query(text['text'])
-    response = _translate(response)
+    response = _translate(
+            response,
+            source_lang=source_lang,
+            target_lang=target_lang,
+            api=api)
     if response['status'] == 200:
       g_counter_translated += 1
     return response
