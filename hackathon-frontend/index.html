@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>JABBERWOCKY</title>
+  <link rel="stylesheet" href="/assets/patternfly.min.css">
+  <link rel="stylesheet" href="/assets/patternfly-additions.min.css">
+  <style type="text/css">
+    body {
+      font-size: 14px;
+    }
+
+    .table.dataTable {
+      height: initial;
+    }
+
+    .link {
+      color: inherit;
+    }
+
+    .link:hover {
+      background-color: #d5d5d5;
+      text-decoration: none;
+    }
+
+    .content-view-pf-pagination.table-view-pf-pagination {
+      padding-top: 1em;
+      border-top: none;
+    }
+
+    .form-wrapper {
+      background-color: #f5f5f5;
+      border: 1px solid #d1d1d1;
+      height: 15em;
+    }
+
+    .content-view-pf-pagination .form-group:last-child {
+      float: none;
+    }
+
+    .content-view-pf-pagination .form-group:last-child {
+      justify-content: flex-end;
+      float: right;
+    }
+
+    .content-view-pf-pagination .form-group {
+      float: none;
+    }
+
+    .content-view-pf-pagination .form-group {
+      align-items: baseline;
+      display: flex;
+      flex-grow: 1;
+      float: left;
+      margin: 5px;
+    }
+
+    .content-view-pf-pagination .form-group .pagination-pf-pagesize.bootstrap-select.btn-group,
+    .content-view-pf-pagination .form-group .pagination-pf-pagesize.btn-group {
+      display: flex;
+      float: none;
+      margin-bottom: 0;
+      margin-left: 0;
+      margin-right: 5px;
+      width: auto;
+    }
+
+    nav>.navbar-header {
+      padding-left: 1em
+    }
+
+    nav.navbar-collapse>.navbar-right {
+      padding-right: 1.5em
+    }
+
+    .package-tag {
+      display: inline-block;
+      margin-right: 2px;
+      margin-top: 0.3em;
+      padding-top: 5px;
+      font-size: 0.75em;
+    }
+
+    .footer {
+      margin: 0;
+      padding-left: 1.75em;
+      padding-right: 1.75em;
+    }
+
+    .footer .list-group-item {
+      padding-left: 0;
+      border: 0;
+    }
+
+    .footer .list-group {
+      border: 0;
+    }
+
+    .footer h5 {
+      font-weight: bold;
+    }
+
+    #add-event-form h4 {
+      font-weight: bold;
+    }
+
+    .wizard-pf .modal-content {
+      min-height: auto;
+    }
+
+    .wizard-pf .modal-footer {
+      position: relative;
+      background-color: #f1f1f1;
+      border-top: 1px solid #d1d1d1;
+      margin-top: 1em;
+    }
+
+
+    .p-1em {
+      padding: 1em;
+    }
+
+    .centered {
+      text-align: center;
+    }
+
+    #sign-in-form input {
+      width: 20em;
+    }
+
+    .top-buffer {
+      padding-top: 2em;
+    }
+
+    .button-gutter {
+      padding: 1em;
+    }
+
+    .pulse {
+      cursor: pointer;
+      animation: pulse 2s infinite;
+      font-size: 3em;
+    }
+
+    .pulse:hover {
+      animation: none;
+    }
+
+    @-webkit-keyframes pulse {
+      0% {
+        -webkit-transform: scale(1.0);
+      }
+      70% {
+        -webkit-transform: scale(1.1);
+      }
+      100% {
+        -webkit-transform: scale(1.0);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1.0);
+      }
+      70% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1.0);
+      }
+    }
+
+    img.navbar-brand {
+      padding-top: 1.2em !important;
+    }
+
+    #pes-help-menu,
+    #pes-user-menu {
+      padding: 14px 14px;
+    }
+
+    .align-left {
+      padding-left: 2.6em;
+    }
+
+    .react-autosuggest__container {
+      position: relative;
+      display: table-cell;
+      left: -1px;
+    }
+
+    .react-autosuggest__input {
+      font-size: 1em;
+      padding-left: 0.25em;
+    }
+
+    .react-autosuggest__input--focused {
+      outline: none;
+    }
+
+    .react-autosuggest__input--open {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .react-autosuggest__suggestions-container {
+      display: none;
+    }
+
+    .react-autosuggest__suggestions-container--open {
+      display: block;
+      position: absolute;
+      top: 26px;
+      width: 280px;
+      border: 1px solid #aaa;
+      background-color: #fff;
+      font-family: Helvetica, sans-serif;
+      font-weight: 300;
+      font-size: 16px;
+      z-index: 2;
+      max-height: 500px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .react-autosuggest__suggestions-list {
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+    }
+
+    .react-autosuggest__suggestion {
+      cursor: pointer;
+      padding: 10px 20px;
+      text-align: left;
+    }
+
+    .react-autosuggest__suggestion--highlighted {
+      background-color: rgb(222, 243, 255);
+      border-top: 1px solid rgb(190, 225, 244);
+      border-bottom: 1px solid rgb(190, 225, 244);
+    }
+
+    .react-autosuggest__section-container {}
+
+    .react-autosuggest__section-container--first {
+      border-top: 0;
+    }
+
+    .react-autosuggest__section-title {
+      padding: 10px 0 0 10px;
+      font-size: 12px;
+      color: #777;
+    }
+
+    .rbt {
+      outline: none;
+    }
+
+    .rbt-menu {
+      margin-bottom: 2px;
+    }
+
+    .rbt-menu>li a {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rbt-menu>li a:focus {
+      outline: none;
+    }
+
+    .rbt-menu-pagination-option {
+      text-align: center;
+    }
+
+    .rbt .rbt-input-main::-ms-clear {
+      display: none;
+    }
+
+    .rbt-input-multi {
+      cursor: text;
+      overflow: hidden;
+      position: relative;
+      height: auto;
+    }
+
+    .rbt-input-multi.focus {
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+      border-color: #66afe9;
+      outline: 0;
+    }
+
+    .rbt-input-multi.form-control[disabled] {
+      background-color: #e9ecef;
+      opacity: 1;
+    }
+
+    .rbt-input-multi input::-moz-placeholder {
+      color: #999;
+      opacity: 1;
+    }
+
+    .rbt-input-multi input:-ms-input-placeholder {
+      color: #999;
+    }
+
+    .rbt-input-multi input::-webkit-input-placeholder {
+      color: #999;
+    }
+
+    .rbt-input-multi .rbt-input-wrapper {
+      margin-bottom: -4px;
+      margin-top: -1px;
+      overflow: hidden;
+    }
+
+    .rbt-input-multi .rbt-input-main {
+      height: 20px;
+      margin: 1px 0 4px;
+    }
+
+    .rbt-input-multi .rbt-input-hint-container {
+      display: inline-block !important;
+    }
+
+    .rbt-input-multi.input-lg .rbt-input-main,
+    .rbt-input-multi.form-control-lg .rbt-input-main {
+      height: 24px;
+    }
+
+    .rbt-input-multi.input-sm .rbt-input-main,
+    .rbt-input-multi.form-control-sm .rbt-input-main {
+      height: 18px;
+    }
+
+    .rbt-close {
+      z-index: 1;
+    }
+
+    .rbt-close-lg {
+      font-size: 24px;
+    }
+
+    .rbt-token {
+      background-color: #e7f4ff;
+      border: 0;
+      border-radius: 2px;
+      color: #1f8dd6;
+      display: inline-block;
+      line-height: 1em;
+      margin: 0 3px 3px 0;
+      padding: 4px 7px;
+      position: relative;
+    }
+
+    .rbt-token-disabled {
+      background-color: #ddd;
+      color: #888;
+      pointer-events: none;
+    }
+
+    .rbt-token-removeable {
+      cursor: pointer;
+      padding-right: 21px;
+    }
+
+    .rbt-token-active {
+      background-color: #1f8dd6;
+      color: #fff;
+      outline: none;
+      text-decoration: none;
+    }
+
+    .rbt-token .rbt-token-remove-button {
+      bottom: 0;
+      color: inherit;
+      font-size: inherit;
+      font-weight: normal;
+      opacity: 1;
+      outline: none;
+      padding: 3px 7px;
+      position: absolute;
+      right: 0;
+      text-shadow: none;
+      top: -2px;
+    }
+
+    .rbt-loader {
+      -webkit-animation: loader-animation 600ms infinite linear;
+      -o-animation: loader-animation 600ms infinite linear;
+      animation: loader-animation 600ms infinite linear;
+      border: 1px solid #d5d5d5;
+      border-radius: 50%;
+      border-top-color: #1f8dd6;
+      display: block;
+      height: 16px;
+      width: 16px;
+    }
+
+    .rbt-loader-lg {
+      height: 20px;
+      width: 20px;
+    }
+
+    .rbt-aux {
+      display: -webkit-box;
+      display: -moz-box;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      align-items: center;
+      bottom: 0;
+      justify-content: center;
+      pointer-events: none;
+      /* Don't block clicks on the input */
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 34px;
+    }
+
+    .rbt-aux-lg {
+      width: 46px;
+    }
+
+    .rbt-aux .rbt-close {
+      margin-top: -4px;
+      pointer-events: auto;
+      /* Override pointer-events: none; above */
+    }
+
+    .has-aux .rbt-input {
+      padding-right: 34px;
+    }
+
+    .rbt-highlight-text {
+      background-color: inherit;
+      color: inherit;
+      font-weight: bold;
+      padding: 0;
+    }
+
+    /* Input Groups */
+
+    .input-group>.rbt {
+      -webkit-box-flex: 1;
+      -moz-box-flex: 1;
+      -webkit-flex: 1;
+      -ms-flex: 1;
+      flex: 1;
+    }
+
+    .input-group>.rbt .rbt-input-hint-container {
+      display: -webkit-box;
+      display: -moz-box;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+    }
+
+    .input-group>.rbt .rbt-input-hint {
+      z-index: 5;
+    }
+
+    .input-group>.rbt:not(:first-child) .form-control {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    .input-group>.rbt:not(:last-child) .form-control {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    /* Validation States */
+
+    .has-error .rbt-input-multi.focus {
+      border-color: #843534;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
+      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
+    }
+
+    .has-warning .rbt-input-multi.focus {
+      border-color: #66512c;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #c0a16b;
+      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #c0a16b;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #c0a16b;
+    }
+
+    .has-success .rbt-input-multi.focus {
+      border-color: #2b542c;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168;
+      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168;
+    }
+
+    @keyframes loader-animation {
+      to {
+        transform: rotate(1turn);
+      }
+    }
+
+    @-webkit-keyframes loader-animation {
+      to {
+        -webkit-transform: rotate(1turn);
+      }
+    }
+
+    .revealer-appear {
+      opacity: 0.01;
+    }
+
+    .revealer-appear.revealer-appear-active {
+      opacity: 1;
+      transition: opacity 300ms ease-in;
+    }
+
+    .content-view {
+      font-size: 1.5em;
+      border: 1px solid #aaa;
+      padding: 0.5em;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="text/javascript" src="/assets/bundle.js"></script>
+</body>
+
+</html>
