@@ -17,6 +17,14 @@ objects:
         component: api
       name: api
 
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      labels:
+        app: shackathon
+        component: api
+      name: python-36-centos7-chrome
+
   - kind: Route
     apiVersion: v1
     metadata:
@@ -132,7 +140,7 @@ objects:
         sourceStrategy:
           from:
             kind: ImageStreamTag
-            name: python-36-centos7:latest
+            name: python-36-centos7-chrome:latest
           env:
             - name: ENABLE_PIPENV
               value: '1'
@@ -143,4 +151,46 @@ objects:
       triggers:
         - type: ImageChange
           imageChange: {}
+
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      name: api-chrome
+      labels:
+        app: shackathon
+        component: api
+    spec:
+      successfulBuildsHistoryLimit: 1
+      failedBuildsHistoryLimit: 2
+      resources:
+        requests:
+          cpu: 500m
+          memory: 512Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+      output:
+        to:
+          kind: ImageStreamTag
+          name: python-36-centos7-chrome:latest
+      source:
+        type: Git
+        git:
+          uri: https://github.com/fridex/shackathon/
+          ref: master
+      strategy:
+        type: Docker
+        dockerStrategy:
+          dockerfilePath: Dockerfile
+          env:
+            - name: ENABLE_PIPENV
+              value: '1'
+            - name: UPGRADE_PIP_TO_LATEST
+              value: ''
+            - name: WEB_CONCURRENCY
+              value: '4'
+      triggers:
+        - type: ImageChange
+          imageChange: {}
+
 
