@@ -16,16 +16,6 @@ DATA_DIR = 'data/'
 
 CHARACTER_LIMIT = 4500
 
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--disable-dev-shm-usage')
-
-driver = webdriver.Chrome(options=chrome_options)
-driver.get(BASE_URL)
-
-driver.implicitly_wait(0.25)
-
 
 def iter_chunks(data: list):
     remaining_limit = CHARACTER_LIMIT
@@ -45,6 +35,16 @@ def iter_chunks(data: list):
 
 
 def translate(query: str, from_lang='cs', to_lang='en') -> list:
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+
+    driver = webdriver.Chrome(options=chrome_options)
+    driver.get(BASE_URL)
+
+    driver.implicitly_wait(0.25)
+
     lang_mod = f"#{from_lang}/{to_lang}/"
     quoted_query = lang_mod + parse.quote(query)
     
