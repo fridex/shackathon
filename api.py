@@ -1,7 +1,7 @@
-import requests
-
-from urllib import parse
 from xmlrpc.client import ServerProxy
+from urllib import parse
+
+import requests
 
 
 BASE_URL  = "https://slovnik.seznam.cz/{from_lang}-{to_lang}/?q={query}"
@@ -37,14 +37,16 @@ _QUERY = \
 client = ServerProxy(QUERY_URL)
 
 
-def _should_anlayze(graph_response) -> bool:
+def _should_analyze(graph_response) -> bool:
+
+    return True
 
 
-
-def _translate(graph_response: dict) -> dict:
+def _translate(graph_response: dict, from_lang='cz', to_lang='en') -> dict:
     # graph_response['data']['meanings'][0]['queries'][0]['tokens'][0]['text']
 
     if _should_analyze(graph_response):
+        query = ...
         translation = client.toolbar.search(query, f"{from_lang}_{to_lang}")
 
     else:
@@ -66,7 +68,7 @@ def _construct_link(query: str, from_lang='cz', to_lang='en') -> str:
 def translate(text: str) -> dict:
     response = raw_graphql_query(text)
 
-    return _analyze(response)
+    return _translate(response)
 
 
 def raw_graphql_query(text: str) -> dict:
