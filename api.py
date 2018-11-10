@@ -54,7 +54,7 @@ _QUERY = \
 
 
 client = ServerProxy(QUERY_URL)
-
+g_counter = 0
 
 def _get_parsed_attrs(graph_response: dict) -> list:
     meaning, = graph_response['data']['cqp']['meanings']
@@ -152,8 +152,9 @@ def translate(text: str,
               source_lang='cz',
               target_lang='en',
               api='s') -> dict:
+    global g_counter
+    g_counter += 1
     response = raw_graphql_query(text)
-
     return _translate(response)
 
 
@@ -170,3 +171,7 @@ def raw_graphql_query(text: str) -> dict:
     )
 
     return response.json()
+
+def get_access_count():
+  global g_counter
+  return g_counter

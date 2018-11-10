@@ -73,3 +73,14 @@ paths:
         201:
           description: Raw graphql response.
 
+  /matrix:
+    get:
+      tags: ["Matrics"]
+      x-swagger-router-controller: api
+      operationId: get_access_count
+      summary: Get total access count.
+      parameters: []
+      responses:
+        200:
+          description: Response with number of requests made since start.
+
