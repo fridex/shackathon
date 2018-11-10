@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {
+  DonutChart,
   Spinner,
   Grid,
   Row,
@@ -23,7 +24,13 @@ axiosRetry(axios, {
 });
 
 const languageTable = [
-  'CZ', 'EN', 'FR'
+  'CS', 'EN', 'FR'
+];
+const verboseLanguageTable = [
+  'Česky', 'Anglicky', 'Francouzsky'
+];
+const backends = [
+  'Seznam', 'TBD', 'Google'
 ];
 
 export default class App extends Component {
@@ -36,52 +43,101 @@ export default class App extends Component {
       timeout: null,
       retrieval: null,
       sourceValue: '',
-      targetValue: 'this is an example',
+      targetValue: '',
       sourceDefHeader: '',
       targetDefHeader: '',
-      sourceDefs: ['First meaning', 'Second meaning', 'Third meaning'],
-      targetDefs: []
+      sourceDefs: [],
+      targetDefs: [],
+      backend: 0,
+      total: 0,
+      translated: 0
     };
   }
 
+  componentDidMount = () => {
+    const refresh = () => axios.get('/api/v1/matrix')
+        .then(d => this.setState({...d.data}))
+        .catch(e => {});
+
+    setInterval(refresh, 1000);
+  };
+
+  translate = cb => {
+    axios.post(`/api/v1/translate?source_lang=${languageTable[this.state.source]}&target_lang=${languageTable[this.state.target]}&api=${backends[this.state.backend]}`,
+      {
+        text: this.state.entered,
+      }
+    ).then(cb).catch(e => {
+      clearTimeout(this.state.timeout);
+      this.setState({retrieval: null, timeout: null});
+      alert(e);
+    });
+  };
+  
   timeoutProc = () => {
     if (this.state.timeout != null) {
       clearTimeout(this.state.timeout);
     }
+    if (this.state.entered.length < 1)
+      return;
     let timeout = setTimeout(() => {
-      this.setState({timeout: null});
-      console.log(`Looking up ${this.state.entered}`);
-      if (this.state.entered.length > 0) {
-        let retrieval = setTimeout(() => {
-          this.setState({retrieval: null});
-          this.setState({sourceValue: this.state.entered});
-          console.log(` -- results for: ${this.state.entered}`);
-        }, 3000);
-        this.setState({ retrieval });
-      }
+      this.setState({timeout: null, retrieval: true});
+      this.translate(data => {
+        const d = data.data;
+        const tags = d.tags;
+        const translations = d.translations;
+        const query = d.query;
+
+        this.setState({
+          sourceValue: query,
+          sourceDefs: tags,
+          targetDefs: translations,
+          retrieval: null
+        });
+      });
     }, 750);
     this.setState({ timeout });
   };
-  removeDecoration = {backgroundColor: 'auto', border: '0px'};
+  removeDecoration = {backgroundColor: '#fff', border: '0px'};
   langSelectors = {...this.removeDecoration, padding: 0}
   words = {display: 'inline-block', borderRadius: '0.25em', margin: '2px', padding: '2px'}
 
-  focusWord = (w, parent) => {
+  focusWord = (w, parent, i) => {
     if (parent === 'source') {
-      this.setState({sourceDefHeader: w});
+      this.setState({sourceDefHeader: w, sourceDefs: this.state.sourceDefs[i]});
     } else {
-      this.setState({targetDefHeader: w});
+      this.setState({targetDefHeader: w, targetDefs: this.state.targetDefs[i].join(', ')});
     }
   };
+
+  selectBackend = e => this.state.backend != e && this.setState({backend: e});
   selectLangSource = e => this.state.target != e && this.setState({source: e});
   selectLangTarget = e => this.state.source != e && this.setState({target: e});
   swapLang = () => this.setState({source: this.state.target, target: this.state.source});
-  tokenize = (str, parent) => str.split(' ').map((e, i) => <a href="#" className="link" onClick={() => this.focusWord(e, parent)} style={this.words} key={i}>{e}</a>)
+  tokenize = (str, parent) => str.split(' ').map((e, i) => <a href="#" className="link" onClick={() => this.focusWord(e, parent, i)} style={this.words} key={i}>{e}</a>)
 
   render() {
     const spinnerProps = this.state.retrieval ? {loading: true} : {};
     return (
       <Grid>
+        <div style={{position: 'absolute', 'top': 0, right: 0}}>
+          Backend: <DropdownButton title={backends[this.state.backend]} pullRight id="backend">
+            {languageTable.map(
+              (e, i) => <MenuItem onSelect={this.selectBackend} active={i == this.state.backend} eventKey={i} key={i}>{backends[i]}</MenuItem>
+            )}
+          </DropdownButton>
+          <DonutChart
+            id="donunt-chart-1"
+            size={{width: 210,height: 210}}
+            data={{
+              columns: [['Dotazu',this.state.total],['Obslouzeno',this.state.translated]],
+              groups: [['used','available']],
+              order: null
+            }}
+            tooltip={{contents: ""}}
+            title={{type: 'max'}}
+          />
+        </div>
         <Row>
           <Col md={12}>
             <center>
@@ -117,7 +173,7 @@ export default class App extends Component {
                       </InputGroup.Addon>
                       <FormControl type="text" disabled={this.state.retrieval != null} 
                         value={this.state.entered} 
-                        onChange={e => { this.setState({entered: e.target.value}); this.timeoutProc(); }}/>
+                        onChange={e => { this.setState({entered: e.target.value}, this.timeoutProc); }}/>
                       <InputGroup.Addon style={this.removeDecoration}>
                         <Spinner {...spinnerProps} inline size="sm" />
                       </InputGroup.Addon>
@@ -127,21 +183,22 @@ export default class App extends Component {
               </Form>
               <div>
                 <Col sm={6}>
-                  <center><h2>Source</h2></center>
+                  <center><h2>{verboseLanguageTable[this.state.source]}</h2></center>
                   <div className='content-view'>
                     {this.tokenize(this.state.sourceValue, 'source')}
                   </div>
                   {(this.state.sourceDefHeader || null) && <div><h2><b>{this.state.sourceDefHeader}</b></h2></div>}
-                  {this.state.sourceDefs.map(
-                    (e, i) => <p key={i}>{e}</p>
-                  )}
+                  {this.state.sourceDefs}
+                  {this.state.sourceDefHeader.length > 0 && this.state.sourceDefs.length == 0 && <span>Bez definice</span>}
                 </Col>
                 <Col sm={6}>
-                  <center><h2>Target</h2></center>
+                  <center><h2>{verboseLanguageTable[this.state.target]}</h2></center>
                   <div className='content-view'>
                     {this.tokenize(this.state.targetValue, 'target')}
                   </div>
                   {(this.state.targetDefHeader || null) && <div><h2><b>{this.state.targetDefHeader}</b></h2></div>}
+                  {this.state.targetDefs}
+                  {this.state.targetDefHeader.length > 0 && this.state.targetDefs.length == 0 && <span>Bez definice</span>}
                 </Col>
               </div>
             </div>
