@@ -88,7 +88,7 @@ export default class App extends Component {
         const query = d.query.join(' ');
         const translations = d.translations;
 
-        tv = translations.map(v => {
+        const tv = translations.map(v => {
           const first = v.reverse().pop();
           const comma = first.search(',');
           if (comma > -1) {
