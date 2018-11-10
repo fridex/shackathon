@@ -122,7 +122,8 @@ def _translate(graph_response: dict,
     # graph_response['data']['meanings'][0]['queries'][0]['tokens'][0]['text']
 
     if _should_analyze(graph_response):
-        query = ...
+        #query = ...
+        pass
 
         if api == 's':
             translation = client.toolbar.search(query, f"{source_lang}_{target_lang}")
