@@ -129,9 +129,9 @@ def _analyze_query(graph_response: dict) -> bool:
 
 
 def _translate(graph_response: dict,
-               source_lang='cz',
+               source_lang='cs',
                target_lang='en',
-               api='s') -> dict:
+               api='Seznam') -> dict:
     query, tags = _analyze_query(graph_response)
 
     resp = {'status': 400,
@@ -141,7 +141,10 @@ def _translate(graph_response: dict,
 
     if query:
 
-        if api == 's':
+        if api == 'Seznam':
+            if source_lang == 'cs':
+                source_lang = 'cz'
+
             # only one word per request is supported
             for q in query:
                 r = client.toolbar.search(q, f"{source_lang}_{target_lang}")
@@ -152,7 +155,7 @@ def _translate(graph_response: dict,
 
             resp['status'] = 200
 
-        elif api == 'g':
+        elif api == 'Google':
             translations = g_translate(query, source_lang, target_lang)
             resp['translations'] = [
                 [t] for t in translations
@@ -160,7 +163,7 @@ def _translate(graph_response: dict,
             resp['status'] = 200
 
 
-        elif api == 'm':  # TODO: custom model
+        elif api == 'TBD':  # TODO: custom model
             pass
 
 
