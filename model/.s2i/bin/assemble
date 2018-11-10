@@ -3,3 +3,7 @@
 
 pip install -r /tmp/src/requirements.txt
 git clone https://github.com/tensorflow/nmt
+cp -r /tmp/src/* /opt/app-root/src/
+cd /opt/app-root/src/data
+tar xzf train.small.cs.tgz
+tar xzf train.small.en.tgz
