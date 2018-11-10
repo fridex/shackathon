@@ -20,6 +20,21 @@ paths:
           type: string
           required: true
           description: TBD.
+        - name: source_lang
+          in: query
+          type: string
+          required: false
+          description: TBD.
+        - name: target_lang
+          in: query
+          type: string
+          required: false
+          description: TBD.
+        - name: api
+          in: query
+          type: string
+          required: false
+          description: TBD.
       responses:
         201:
           description: Translated message.
