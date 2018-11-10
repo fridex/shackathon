@@ -189,9 +189,9 @@ def translate(text: str,
               source_lang='cz',
               target_lang='en',
               api='Seznam') -> dict:
-    global g_counter
     g_counter += 1
-    response = raw_graphql_query(text)
+    global g_counter
+    response = raw_graphql_query(text['text'])
     return _translate(response)
 
 

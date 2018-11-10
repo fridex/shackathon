@@ -16,10 +16,14 @@ paths:
       summary: Translate the given text if requested.
       parameters:
         - name: text
-          in: query
-          type: string
-          required: true
-          description: TBD.
+          in: body
+          schema:
+            type: object
+            required: true
+            description: TBD.
+            properties:
+              text:
+                 type: string        
         - name: source_lang
           in: query
           type: string
