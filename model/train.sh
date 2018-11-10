@@ -3,17 +3,16 @@
 mkdir -p model/
 
 python -m nmt.nmt \
-    --attention=scaled_luong \
     --src=cs --tgt=en \
-    --vocab_prefix=data/vocab.50K  \
-    --train_prefix=data/train.small \
+    --vocab_prefix=/tmp/nmt_data/vocab.10K  \
+    --train_prefix=/tmp/nmt_data/train.small \
     --dev_prefix=data/newstest2013  \
     --test_prefix=data/newstest2015 \
-    --out_dir=model/ \
-    --num_train_steps=12000 \
-    --steps_per_stats=100 \
-    --num_layers=2 \
-    --num_units=128 \
+    --out_dir=/tmp/nmt_model/ \
+    --num_train_steps=2000 \
+    --steps_per_stats=50 \
+    --num_layers=4 \
+    --num_units=256 \
 		--learning_rate=0.001 \
 		--optimzer='adam' \
     --dropout=0.2 \

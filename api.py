@@ -136,6 +136,7 @@ def _translate(graph_response: dict,
     query, tags = _analyze_query(graph_response)
 
     resp = {'status': 400,
+            'query': query,
             'statusMessage': 'Bad Request',
             'translations': [],
             'tags': tags}
@@ -161,7 +162,7 @@ def _translate(graph_response: dict,
             if source_lang == 'cz':
                 source_lang = 'cs'
 
-            translations = g_translate(query, source_lang, target_lang)
+            translations = g_translate(" ".join(query), source_lang, target_lang)
             resp['translations'] = [
                 [t] for t in translations
             ]
