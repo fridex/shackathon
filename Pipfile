@@ -7,6 +7,8 @@ name = "pypi"
 connexion = {extras = ["swagger-ui"], version = "*"}
 gunicorn = "*"
 requests = "*"
+selenium = "*"
+chromedriver-installer = "*"
 
 [dev-packages]
 
