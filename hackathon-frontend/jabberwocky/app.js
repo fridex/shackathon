@@ -85,13 +85,24 @@ export default class App extends Component {
       this.translate(data => {
         const d = data.data;
         const tags = d.tags;
-        const translations = d.translations;
         const query = d.query;
+        const translations = d.translations;
+
+        tv = translations.map(v => {
+          const first = v.reverse().pop();
+          const comma = first.search(',');
+          if (comma > -1) {
+            return first.substr(0, comma);
+          } else {
+            return first;
+          }
+        });
 
         this.setState({
           sourceValue: query,
           sourceDefs: tags,
           targetDefs: translations,
+          targetValue: tv,
           retrieval: null
         });
       });
@@ -114,7 +125,9 @@ export default class App extends Component {
   selectLangSource = e => this.state.target != e && this.setState({source: e});
   selectLangTarget = e => this.state.source != e && this.setState({target: e});
   swapLang = () => this.setState({source: this.state.target, target: this.state.source});
-  tokenize = (str, parent) => str.split(' ').map((e, i) => <a href="#" className="link" onClick={() => this.focusWord(e, parent, i)} style={this.words} key={i}>{e}</a>)
+  tokenize = (str, parent) => { 
+    if (str) str.split(' ').map((e, i) => <a href="#" className="link" onClick={() => this.focusWord(e, parent, i)} style={this.words} key={i}>{e}</a>) 
+  }
 
   render() {
     const spinnerProps = this.state.retrieval ? {loading: true} : {};
