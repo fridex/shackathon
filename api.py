@@ -86,7 +86,7 @@ def _should_analyze(graph_response: dict) -> bool:
 
     if graph_response:
 
-        correction, lemmas = _get_parsed_attrs(response)
+        correction, lemmas = _get_parsed_attrs(graph_response)
 
         # matches checks
         cmd_allowed = False
