@@ -125,10 +125,12 @@ def _translate(graph_response: dict,
         #query = ...
         pass
 
-        if api == 's':
+        if api == 'Seznam':
             translation = client.toolbar.search(query, f"{source_lang}_{target_lang}")
-        elif api == 'g':
+        elif api == 'Google':
             translation = g_translate(query, source_lang, target_lang)
+        elif api == 'TBD':
+            translation = {'success': 'You will see something here I guess...'}
         else:
             translation = {'error': 'API Not Found'}, 400
 

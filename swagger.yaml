@@ -52,6 +52,7 @@ paths:
           enum:
             - Google
             - Seznam
+            - TBD
           default: Seznam
       responses:
         201:
