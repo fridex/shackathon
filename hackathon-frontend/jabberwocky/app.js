@@ -128,7 +128,7 @@ export default class App extends Component {
   tokenize = (str, parent) => { 
     if (str) { 
       console.log(str);
-      str.split(' ').map((e, i) => <a href="#" className="link" onClick={() => this.focusWord(e, parent, i)} style={this.words} key={i}>{e}</a>) 
+      return str.split(' ').map((e, i) => <a href="#" className="link" onClick={() => this.focusWord(e, parent, i)} style={this.words} key={i}>{e}</a>) 
     }
   }
 
