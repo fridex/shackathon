@@ -85,7 +85,7 @@ export default class App extends Component {
       this.translate(data => {
         const d = data.data;
         const tags = d.tags;
-        const query = d.query;
+        const query = d.query.join(' ');
         const translations = d.translations;
 
         tv = translations.map(v => {
@@ -126,7 +126,10 @@ export default class App extends Component {
   selectLangTarget = e => this.state.source != e && this.setState({target: e});
   swapLang = () => this.setState({source: this.state.target, target: this.state.source});
   tokenize = (str, parent) => { 
-    if (str) str.split(' ').map((e, i) => <a href="#" className="link" onClick={() => this.focusWord(e, parent, i)} style={this.words} key={i}>{e}</a>) 
+    if (str) { 
+      console.log(str);
+      str.split(' ').map((e, i) => <a href="#" className="link" onClick={() => this.focusWord(e, parent, i)} style={this.words} key={i}>{e}</a>) 
+    }
   }
 
   render() {
