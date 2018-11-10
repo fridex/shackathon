@@ -23,18 +23,36 @@ paths:
         - name: source_lang
           in: query
           type: string
-          required: false
+          required: true
           description: TBD.
+          items:
+            type: string
+          enum:
+            - en
+            - cs
+          default: cs
         - name: target_lang
           in: query
           type: string
-          required: false
+          required: true
           description: TBD.
+          items:
+            type: string
+          enum:
+            - cs
+            - en
+          default: en
         - name: api
           in: query
           type: string
-          required: false
           description: TBD.
+          required: true
+          items:
+            type: string
+          enum:
+            - Google
+            - Seznam
+          default: Seznam
       responses:
         201:
           description: Translated message.
