@@ -3,6 +3,8 @@ from urllib import parse
 
 import requests
 
+from google_translate.py import translate
+
 
 BASE_URL  = "https://slovnik.seznam.cz/{from_lang}-{to_lang}/?q={query}"
 QUERY_URL = "https://api.slovnik.seznam.cz/rpc2"
@@ -42,12 +44,21 @@ def _should_analyze(graph_response) -> bool:
     return True
 
 
-def _translate(graph_response: dict, from_lang='cz', to_lang='en') -> dict:
+def _translate(graph_response: dict,
+               from_lang='cz',
+               to_lang='en',
+               api='s') -> dict:
     # graph_response['data']['meanings'][0]['queries'][0]['tokens'][0]['text']
 
     if _should_analyze(graph_response):
         query = ...
-        translation = client.toolbar.search(query, f"{from_lang}_{to_lang}")
+
+        if api == 's':
+            translation = client.toolbar.search(query, f"{from_lang}_{to_lang}")
+        elif api == 'g':
+            translation = translate(query, f"{from_lang}_{to_lang}")
+        else:
+            translation = {'status': 404, 'statusMessage': 'API Not Found', 'translations': []}
 
     else:
         translation = {'status': 400, 'statusMessage': 'Bad Request', 'translations': []}
