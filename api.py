@@ -130,7 +130,7 @@ def _translate(graph_response: dict,
         elif api == 'Google':
             translation = g_translate(query, source_lang, target_lang)
         elif api == 'TBD':
-            translation = {'success': 'You will see something here I guess...'}
+            translation = {'success': 'You will see something here I guess...'}, 400
         else:
             translation = {'error': 'API Not Found'}, 400
 

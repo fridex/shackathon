@@ -55,7 +55,7 @@ paths:
             - TBD
           default: Seznam
       responses:
-        201:
+        200:
           description: Translated message.
 
   /raw-graphql-query:
