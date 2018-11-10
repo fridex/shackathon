@@ -1,7 +1,8 @@
 #!/usr/bin/bash
 
 
-pip install -r /tmp/src/requirements.txt
+#pip install -r /tmp/src/requirements.txt
+pip install /tmp/src/tensorflow-*.whl
 git clone https://github.com/tensorflow/nmt nmtx
 mv nmtx/nmt nmt
 rm -rf nmtx
