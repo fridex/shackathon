@@ -1,1 +1,1 @@
-# shackathon
+# sHackathon
