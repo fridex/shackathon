@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+
+
+pip install -r /tmp/src/requirements.txt
+git clone https://github.com/tensorflow/nmt
