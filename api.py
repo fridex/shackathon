@@ -12,7 +12,20 @@ ALLOWED_COMMANDS = ["přeložit", "překlad", "jak se říct"]
 ALLOWED_LANGUAGE_SPEC  = ["anglicky", "anglický", "angličtina"]
 ALLOWED_EXACTS = ["anglicky", "v anglictine", "v angličtině"]
 
-
+_AJKA_TAGSET = {
+  'k1': 'Substantivum',
+  'k2': 'Adjektivum',
+  'k3': 'Zajmeno',
+  'k4': 'Cislovka',
+  'k5': 'Sloveso',
+  'k6': 'Prislovce',
+  'k7': 'Predlozka',
+  'k8': 'Spojka',
+  'k9': 'Castice',
+  'k0': 'Citoslovce',
+  'kA': 'Zkratka',
+  'kY': 'by,aby,kdyby',
+}
 _QUERY = \
 """
 {
@@ -51,16 +64,21 @@ def _get_parsed_attrs(graph_response: dict) -> list:
 
     lemmas = []
     correction = []
+    tags = []
 
     for token_attr in tokens:
         text = token_attr['text']
         best_lemma = token_attr.get('bestLemma', None)
+        best_lemma = token_attr.get('bestLemma', None)
 
         if best_lemma:
             lemmas.append(best_lemma['lemma'])
+            tag_key = best_lemma['morphology']['tagStr'][:2]
+            tags.append(_AJKA_TAGSET.get(tag_key, 'N/A'))
 
             correction.append(text)
 
+    #return correction, lemmas, tags
     return correction, lemmas
 
 
