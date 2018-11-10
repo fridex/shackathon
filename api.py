@@ -8,9 +8,9 @@ from google_translate import translate as g_translate
 BASE_URL  = "https://slovnik.seznam.cz/{source_lang}-{target_lang}/?q={query}"
 QUERY_URL = "https://api.slovnik.seznam.cz/rpc2"
 
-ALLOWED_COMMANDS = ["přeložit", "překlad", "jak se říct"]
 ALLOWED_LANGUAGE_SPEC  = ["anglicky", "anglický", "angličtina"]
-ALLOWED_EXACTS = ["anglicky", "v anglictine", "v angličtině"]
+ALLOWED_COMMANDS = ["přeložit", "překlad", "jak se říct", "jak přeložit"]
+ALLOWED_EXACTS = ["anglicky", "v anglictine", "v angličtině", "do angličtiny"]
 
 _AJKA_TAGSET = {
   'k1': 'Substantivum',
@@ -129,13 +129,13 @@ def _analyze_query(graph_response: dict) -> bool:
 
 
 def _translate(graph_response: dict,
-               source_lang='cs',
+               source_lang='cz',
                target_lang='en',
                api='Seznam') -> dict:
     query, tags = _analyze_query(graph_response)
 
     resp = {'status': 400,
-            'statusMessage': 'Status OK',
+            'statusMessage': 'Bad Request',
             'translations': [],
             'tags': tags}
 
@@ -154,13 +154,18 @@ def _translate(graph_response: dict,
                 resp['translations'].append(translations)
 
             resp['status'] = 200
+            resp['statusMessage'] = 'Status OK'
 
         elif api == 'Google':
+            if source_lang == 'cz':
+                source_lang = 'cs'
+
             translations = g_translate(query, source_lang, target_lang)
             resp['translations'] = [
                 [t] for t in translations
             ]
             resp['status'] = 200
+            resp['statusMessage'] = 'Status OK'
 
 
         elif api == 'TBD':  # TODO: custom model
@@ -183,7 +188,7 @@ def _construct_link(query: str, source_lang='cz', target_lang='en') -> str:
 def translate(text: str,
               source_lang='cz',
               target_lang='en',
-              api='s') -> dict:
+              api='Seznam') -> dict:
     global g_counter
     g_counter += 1
     response = raw_graphql_query(text)
