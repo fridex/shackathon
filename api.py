@@ -54,7 +54,8 @@ _QUERY = \
 
 
 client = ServerProxy(QUERY_URL)
-g_counter = 0
+g_counter_total = 0
+g_counter_translated = 0
 
 
 def _get_parsed_attrs(graph_response: dict) -> list:
@@ -189,10 +190,14 @@ def translate(text: str,
               source_lang='cz',
               target_lang='en',
               api='Seznam') -> dict:
-    g_counter += 1
-    global g_counter
+    global g_counter_total
+    global g_counter_translated
+    g_counter_total += 1
     response = raw_graphql_query(text['text'])
-    return _translate(response)
+    response = _translate(response)
+    if response['status'] == 200:
+      g_counter_translated += 1
+    return response
 
 
 def raw_graphql_query(text: str) -> dict:
@@ -210,5 +215,6 @@ def raw_graphql_query(text: str) -> dict:
     return response.json()
 
 def get_access_count():
-  global g_counter
-  return g_counter
+  global g_counter_total
+  global g_counter_translated
+  return {'total': g_counter_total, 'translated': g_counter_translated}
