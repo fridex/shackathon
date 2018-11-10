@@ -3,10 +3,10 @@ from urllib import parse
 
 import requests
 
-from google_translate.py import translate
+from google_translate import translate
 
 
-BASE_URL  = "https://slovnik.seznam.cz/{from_lang}-{to_lang}/?q={query}"
+BASE_URL  = "https://slovnik.seznam.cz/{source_lang}-{target_lang}/?q={query}"
 QUERY_URL = "https://api.slovnik.seznam.cz/rpc2"
 
 _QUERY = \
@@ -45,8 +45,8 @@ def _should_analyze(graph_response) -> bool:
 
 
 def _translate(graph_response: dict,
-               from_lang='cz',
-               to_lang='en',
+               source_lang='cz',
+               target_lang='en',
                api='s') -> dict:
     # graph_response['data']['meanings'][0]['queries'][0]['tokens'][0]['text']
 
@@ -54,9 +54,9 @@ def _translate(graph_response: dict,
         query = ...
 
         if api == 's':
-            translation = client.toolbar.search(query, f"{from_lang}_{to_lang}")
+            translation = client.toolbar.search(query, f"{source_lang}_{target_lang}")
         elif api == 'g':
-            translation = translate(query, f"{from_lang}_{to_lang}")
+            translation = translate(query, source_lang, target_lang)
         else:
             translation = {'status': 404, 'statusMessage': 'API Not Found', 'translations': []}
 
@@ -66,17 +66,20 @@ def _translate(graph_response: dict,
     return translation
 
 
-def _construct_link(query: str, from_lang='cz', to_lang='en') -> str:
+def _construct_link(query: str, source_lang='cz', target_lang='en') -> str:
     link = BASE_URL.format(
-        from_lang=from_lang,
-        to_lang=to_lang,
+        source_lang=source_lang,
+        target_lang=target_lang,
         query=parse.quote(query)
     )
 
     return link
 
 
-def translate(text: str) -> dict:
+def translate(text: str,
+              source_lang='cz',
+              target_lang='en',
+              api='s') -> dict:
     response = raw_graphql_query(text)
 
     return _translate(response)
