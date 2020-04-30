@@ -19,7 +19,7 @@
     "axios-retry": "^3.1.1",
     "bootstrap": "^3.3.7",
     "history": "^3.0.0",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.0",
     "less": "^3.0.1",
     "lodash.orderby": "^4.6.0",
     "patternfly": "^3.51.0",
